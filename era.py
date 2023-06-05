@@ -1,20 +1,22 @@
 
 import cdsapi
 import pygrib
+import os
 
-DOWNLOAD = False
-
-if DOWNLOAD:
-    c = cdsapi.Client()
-    c.retrieve("reanalysis-era5-single-levels-monthly-means",
-    {
+FILE_NAME = "download.grib"
+DOWNLOAD = os.path.exists("download.grib")
+REQUEST = {
     "variable": "2m_temperature",
     "product_type": "monthly_averaged_reanalysis",
     "year": "2008",
     "month": ["01", "02"],
     'time': '00:00',
     "format": "grib",
-    }, "download.grib")
+}
+
+c = cdsapi.Client()
+if DOWNLOAD:
+    c.retrieve("reanalysis-era5-single-levels-monthly-means", REQUEST, "download.grib")
 
 grbs = pygrib.open('download.grib')
 

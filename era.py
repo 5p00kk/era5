@@ -34,16 +34,11 @@ for i, grb in enumerate(grbs):
 
     lats, lons = grb.latlons()
     
-    #print(f"Values: {grb.values.shape} [{grb.values.min()}-{grb.values.max()}]")
-    #print(f"Lats: {lats.shape} [{lats.min()}-{lats.max()}]")
-    #print(f"Lons: {lons.shape} [{lons.min()}-{lons.max()}]")
+    assert(grb.values.shape == lats.shape)
+    assert(lons.shape == lats.shape)
    
     lat_idx = np.argmin(abs(lats[:,0]-POZNAN_COORD["lat"]))
     lon_idx = np.argmin(abs(lons[0]-POZNAN_COORD["lon"]))
 
     print(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
     print(f"{grb.values[lat_idx][lon_idx]-273}")
-
-    #for j in range(len(grb.values)):
-        #print(f"{i}, {j}: {len(lats[j])}, {len(lons[j])}, {len(grb.values[j])}")
-

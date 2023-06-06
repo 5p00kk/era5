@@ -30,6 +30,8 @@ for location in locations.values():
     logger.info(f"Extracting data for: {location['name'].upper()}")
     logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
 
+    # TODO this loop can be done only once
+    # TODO Save all data with single loop run
     grb_data.rewind() # rewind the iterator
     with tqdm(total=total_it) as progress_bar:
         for i, grb in enumerate(grb_data):

@@ -161,3 +161,4 @@ cython_debug/
 
 *.grib
 *.png
+!samples/*.png

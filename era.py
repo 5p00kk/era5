@@ -6,14 +6,10 @@ import numpy as np
 from visualizer import Visualizer
 from logger import Logger, Logger_level
 
-
-
-
-
-
-
-
 logger = Logger(Logger_level.DEBUG)
+
+visualizer = Visualizer()
+visualizer.set_window(5)
 
 year_list = [str(year) for year in range(1940,2023)]
 FILE_NAME = "download.grib"
@@ -64,6 +60,5 @@ for i, grb in enumerate(grbs):
         year_data = []
 
 
-visualizer = Visualizer()
-visualizer.set_window(5)
+
 visualizer.visu(total_data, year_list)

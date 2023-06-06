@@ -9,7 +9,7 @@ class Visualizer:
     def set_window(self, ws):
         self.ws = ws
 
-    def visu(self, data, y_labels):
+    def visu(self, data, y_labels, title):
         data = np.array(data)
         output_shape = ((data.shape[0] - self.ws + 1, data.shape[1]))
         output = np.zeros(output_shape)
@@ -20,7 +20,12 @@ class Visualizer:
                 output[i,j] = np.mean(window)
         
         y_labels=y_labels[self.ws:]
-        ax = seaborn.heatmap(output, cmap=seaborn.cubehelix_palette(as_cmap=True))
-        ax.set_yticks(range(0, len(y_labels), 5))
-        ax.set_yticklabels(y_labels[::5])
-        plt.show()
+        ax = seaborn.heatmap(output, vmin = -40, vmax=40, cmap='coolwarm')
+        ax.set_yticks(range(0, len(y_labels), 10))
+        ax.set_yticklabels(y_labels[::10])
+        ax.set_xticklabels([1,2,3,4,5,6,7,8,9,10,11,12])
+        plt.title(title.upper())
+        plt.xlabel("month")
+        plt.ylabel("year")
+        plt.savefig(title+".png")
+        plt.close()

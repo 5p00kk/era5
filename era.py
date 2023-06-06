@@ -5,6 +5,7 @@ import os
 import numpy as np
 import seaborn
 import matplotlib.pyplot as plt
+from logger import Logger, Logger_level
 
 class Visualizer:
     def __init__(self) -> None:
@@ -28,6 +29,13 @@ class Visualizer:
         ax.set_yticks(range(0, len(y_labels), 5))
         ax.set_yticklabels(y_labels[::5])
         plt.show()
+
+
+
+
+
+
+logger = Logger(Logger_level.DEBUG)
 
 year_list = [str(year) for year in range(1940,2023)]
 FILE_NAME = "download.grib"
@@ -68,12 +76,12 @@ for i, grb in enumerate(grbs):
     lat_idx = np.argmin(abs(lats[:,0]-POZNAN_COORD["lat"]))
     lon_idx = np.argmin(abs(lons[0]-POZNAN_COORD["lon"]))
 
-    #print(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
-    #print(f"{grb.values[lat_idx][lon_idx]-273}")
+    logger.debug(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
+
     year_data.append(grb.values[lat_idx][lon_idx]-273)
     
     if grb.month == 12:
-        print(f"{grb.year}")
+        logger.info(f"{grb.year}")
         total_data.append(year_data)
         year_data = []
 

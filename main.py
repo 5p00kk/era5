@@ -15,51 +15,53 @@ grb_data = data_loader.load()
 
 # Load locations
 locations = load_locations("locations.csv")
-location = locations["poznan"]
 
 # Prints
 logger.debug("Available GRIB msgs:")
 for grb in grb_data:
     logger.debug(grb)
 
-logger.info(f"Extracting data for: {location['name'].upper()}")
-logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
-
-total_data = []
-year_data = []
 total_it = len(data_loader.year_list)*12
 
-grb_data.rewind() # rewind the iterator
-with tqdm(total=total_it) as progress_bar:
-    for i, grb in enumerate(grb_data):
-        
-        # Update progress bar
-        progress_bar.set_description(f"{grb.year}")
-        progress_bar.update(1)
+for location in locations.values():
+    total_data = []
+    year_data = []
 
-        # Get lat/lon values
-        lats, lons = grb.latlons()
-        # Make sure they match
-        assert(grb.values.shape == lats.shape)
-        assert(lons.shape == lats.shape)
-        # Get single row/col as they repeat
-        lats = lats[:,0]
-        lons = lons[0]
+    logger.info(f"Extracting data for: {location['name'].upper()}")
+    logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
 
-        # Find closest lat/lon
-        lat_idx = np.argmin(abs(lats-location["lat"]))
-        lon_idx = np.argmin(abs(lons-location["lon"]))
+    grb_data.rewind() # rewind the iterator
+    with tqdm(total=total_it) as progress_bar:
+        for i, grb in enumerate(grb_data):
+            
+            # Update progress bar
+            progress_bar.set_description(f"{grb.year}")
+            progress_bar.update(1)
 
-        # Extract temp value
-        # TODO: interpolation
-        temp_k = grb.values[lat_idx][lon_idx]
-        temp_c = temp_k -272.15
+            # Get lat/lon values
+            lats, lons = grb.latlons()
+            # Make sure they match
+            assert(grb.values.shape == lats.shape)
+            assert(lons.shape == lats.shape)
+            # Get single row/col as they repeat
+            lats = lats[:,0]
+            lons = lons[0]
 
-        year_data.append(temp_c)
-        
-        if grb.month == 12:
-            #logger.info(f"{grb.year}")
-            total_data.append(year_data)
-            year_data = []
+            # Find closest lat/lon
+            lat_idx = np.argmin(abs(lats-location["lat"]))
+            lon_idx = np.argmin(abs(lons-location["lon"]))
 
-    visualizer.visu(total_data, data_loader.year_list)
+            # Extract temp value
+            # TODO: interpolation
+            temp_k = grb.values[lat_idx][lon_idx]
+            temp_c = temp_k -272.15
+
+            year_data.append(temp_c)
+            
+            if grb.month == 12:
+                #logger.info(f"{grb.year}")
+                total_data.append(year_data)
+                year_data = []
+
+    logger.info(f"Temp range: {min(min(total_data))} to {max(max(total_data))}")
+    visualizer.visu(total_data, data_loader.year_list, location["name"])

@@ -6,10 +6,30 @@ import numpy as np
 import seaborn
 import matplotlib.pyplot as plt
 
+class Visualizer:
+    def __init__(self) -> None:
+        self.ws = 5
+
+    def set_window(self, ws):
+        self.ws = ws
+
+    def visu(self, data, y_labels):
+        data = np.array(data)
+        output_shape = ((data.shape[0] - self.ws + 1, data.shape[1]))
+        output = np.zeros(output_shape)
+
+        for j in range(output_shape[1]):
+            for i in range(output_shape[0]):
+                window = data[i:(i+self.ws), j]
+                output[i,j] = np.mean(window)
+        
+        y_labels=y_labels[self.ws:]
+        ax = seaborn.heatmap(output, cmap=seaborn.cubehelix_palette(as_cmap=True))
+        ax.set_yticks(range(0, len(y_labels), 5))
+        ax.set_yticklabels(y_labels[::5])
+        plt.show()
 
 year_list = [str(year) for year in range(1940,2023)]
-year_list = [str(year) for year in range(1940,2023)]
-
 FILE_NAME = "download.grib"
 DOWNLOAD = not os.path.exists("download.grib")
 REQUEST = {
@@ -21,8 +41,9 @@ REQUEST = {
     'grid': ['1', '1'],
     "format": "grib",
 }
-POZNAN_COORD={'lat': 52.40692, 'lon': 16.92993}
-POZNAN_COORD={'lat': -6.200000, 'lon': 106.816666}
+POZNAN_COORD={'lat': 40.37767, 'lon': 49.89201} # baku
+POZNAN_COORD={'lat': 6.200000, 'lon': 106.816666} # jakarta
+POZNAN_COORD={'lat': 52.40692, 'lon': 16.92993} # poznan
 
 c = cdsapi.Client()
 if DOWNLOAD:
@@ -39,8 +60,6 @@ total_data = []
 year_data = []
 grbs.rewind() # rewind the iterator
 for i, grb in enumerate(grbs):
-    print(f"\nMsg {i} ({grb.year} {grb.month})")
-
     lats, lons = grb.latlons()
     
     assert(grb.values.shape == lats.shape)
@@ -49,18 +68,16 @@ for i, grb in enumerate(grbs):
     lat_idx = np.argmin(abs(lats[:,0]-POZNAN_COORD["lat"]))
     lon_idx = np.argmin(abs(lons[0]-POZNAN_COORD["lon"]))
 
-    print(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
-    print(f"{grb.values[lat_idx][lon_idx]-273}")
+    #print(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
+    #print(f"{grb.values[lat_idx][lon_idx]-273}")
     year_data.append(grb.values[lat_idx][lon_idx]-273)
     
     if grb.month == 12:
+        print(f"{grb.year}")
         total_data.append(year_data)
         year_data = []
 
 
-
-ax = seaborn.heatmap(total_data, cmap=seaborn.cubehelix_palette(as_cmap=True))
-ax.set_yticks(range(0, len(year_list), 5))
-ax.set_yticklabels(year_list[::5])
-
-plt.show()
+visualizer = Visualizer()
+visualizer.set_window(5)
+visualizer.visu(total_data, year_list)

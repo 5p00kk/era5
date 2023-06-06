@@ -59,16 +59,16 @@ class Logger:
 
     def error(self, text):
         if self.lvl <= Logger_level.ERROR:
-            print(f"{Fore.RED}ERROR: {text}{Style.RESET_ALL}")
+            print(f"{Fore.RED}<E> {text}{Style.RESET_ALL}")
 
     def warn(self, text):
         if self.lvl <= Logger_level.WARN:
-            print(f"{Fore.YELLOW}Warn: {text}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}<W> {text}{Style.RESET_ALL}")
 
     def info(self, text):
         if self.lvl <= Logger_level.INFO:
-            print(f"{Fore.GREEN}Info: {text}{Style.RESET_ALL}")
+            print(f"{Fore.GREEN}<I> {text}{Style.RESET_ALL}")
 
     def debug(self, text):
         if self.lvl <= Logger_level.DEBUG:
-            print(f"{Fore.BLUE}DBG: {text}{Style.RESET_ALL}")
+            print(f"{Fore.BLUE}<D> {text}{Style.RESET_ALL}")

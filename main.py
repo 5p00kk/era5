@@ -13,37 +13,43 @@ data_loader = Era_data("2m_temperature")
 logger = Logger(Logger_level.INFO)
 visualizer = Visualizer(5)
 
-
-
-
+# Load ERA data
 grb_data = data_loader.load()
 
-# Available GRBS
+# Prints
 logger.debug("Available GRIB msgs:")
 for grb in grb_data:
     logger.debug(grb)
 
 total_data = []
 year_data = []
+
 grb_data.rewind() # rewind the iterator
 for i, grb in enumerate(grb_data):
+
+    # Get lat/lon values (single row/col)
     lats, lons = grb.latlons()
-    
+    lats = lats[:,0]
+    lons = lons[0]
+
+    # Make sure they match
     assert(grb.values.shape == lats.shape)
     assert(lons.shape == lats.shape)
    
-    lat_idx = np.argmin(abs(lats[:,0]-POZNAN_COORD["lat"]))
-    lon_idx = np.argmin(abs(lons[0]-POZNAN_COORD["lon"]))
+    # Find closest lat/lon
+    lat_idx = np.argmin(abs(lats-POZNAN_COORD["lat"]))
+    lon_idx = np.argmin(abs(lons-POZNAN_COORD["lon"]))
 
-    logger.debug(f"{lats[lat_idx,0]}, {lons[0][lon_idx]}")
+    # Extract temp value
+    # TODO: interpolation
+    temp_k = grb.values[lat_idx][lon_idx]
+    temp_c = temp_c -272.15
 
-    year_data.append(grb.values[lat_idx][lon_idx]-273)
+    year_data.append(temp_c)
     
     if grb.month == 12:
         logger.info(f"{grb.year}")
         total_data.append(year_data)
         year_data = []
-
-
 
 visualizer.visu(total_data, data_loader.year_list)

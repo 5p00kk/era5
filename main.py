@@ -6,7 +6,7 @@ from logger import Logger, Logger_level
 
 data_loader = Era_data("2m_temperature")
 
-logger = Logger(Logger_level.DEBUG)
+logger = Logger(Logger_level.INFO)
 
 visualizer = Visualizer()
 visualizer.set_window(5)
@@ -20,7 +20,7 @@ POZNAN_COORD={'lat': 6.200000, 'lon': 106.816666} # jakarta
 POZNAN_COORD={'lat': 52.40692, 'lon': 16.92993} # poznan
 
 # Available GRBS
-print("Available msgs:")
+logger.debug("Available GRIB msgs:")
 for grb in grb_data:
     logger.debug(grb)
 

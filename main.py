@@ -27,15 +27,15 @@ year_data = []
 grb_data.rewind() # rewind the iterator
 for i, grb in enumerate(grb_data):
 
-    # Get lat/lon values (single row/col)
+    # Get lat/lon values
     lats, lons = grb.latlons()
-    lats = lats[:,0]
-    lons = lons[0]
-
     # Make sure they match
     assert(grb.values.shape == lats.shape)
     assert(lons.shape == lats.shape)
-   
+    # Get single row/col as they repeat
+    lats = lats[:,0]
+    lons = lons[0]
+
     # Find closest lat/lon
     lat_idx = np.argmin(abs(lats-POZNAN_COORD["lat"]))
     lon_idx = np.argmin(abs(lons-POZNAN_COORD["lon"]))
@@ -43,7 +43,7 @@ for i, grb in enumerate(grb_data):
     # Extract temp value
     # TODO: interpolation
     temp_k = grb.values[lat_idx][lon_idx]
-    temp_c = temp_c -272.15
+    temp_c = temp_k -272.15
 
     year_data.append(temp_c)
     

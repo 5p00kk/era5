@@ -2,11 +2,7 @@ import numpy as np
 from era_data import Era_data
 from visualizer import Visualizer
 from logger import Logger, Logger_level
-
-
-POZNAN_COORD={'lat': 40.37767, 'lon': 49.89201} # baku
-POZNAN_COORD={'lat': 6.200000, 'lon': 106.816666} # jakarta
-POZNAN_COORD={'lat': 52.40692, 'lon': 16.92993} # poznan
+from utils import load_locations
 
 # Init objects
 data_loader = Era_data("2m_temperature")
@@ -16,10 +12,17 @@ visualizer = Visualizer(5)
 # Load ERA data
 grb_data = data_loader.load()
 
+# Load locations
+locations = load_locations("locations.csv")
+location = locations["poznan"]
+
 # Prints
 logger.debug("Available GRIB msgs:")
 for grb in grb_data:
     logger.debug(grb)
+
+logger.info(f"Extracting data for: {location['name'].upper()}")
+logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
 
 total_data = []
 year_data = []
@@ -37,8 +40,8 @@ for i, grb in enumerate(grb_data):
     lons = lons[0]
 
     # Find closest lat/lon
-    lat_idx = np.argmin(abs(lats-POZNAN_COORD["lat"]))
-    lon_idx = np.argmin(abs(lons-POZNAN_COORD["lon"]))
+    lat_idx = np.argmin(abs(lats-location["lat"]))
+    lon_idx = np.argmin(abs(lons-location["lon"]))
 
     # Extract temp value
     # TODO: interpolation

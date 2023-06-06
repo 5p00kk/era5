@@ -18,4 +18,4 @@ This script allows to load data from ESA's API and extract selected variables. A
 ![sample_0](./samples/poznan.png)
 ![sample_1](./samples/sydney.png)
 ![sample_3](./samples/yakutsk.png)
-![sample_4](./samples/puenta_arenas.png)
+![sample_4](./samples/punta_arenas.png)

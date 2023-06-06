@@ -36,7 +36,7 @@ grbs = pygrib.open('download.grib')
 # Available GRBS
 print("Available msgs:")
 for grb in grbs:
-    print(grb)
+    logger.debug(grb)
 
 total_data = []
 year_data = []

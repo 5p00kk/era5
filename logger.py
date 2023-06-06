@@ -1,4 +1,7 @@
 from enum import Enum
+from colorama import init as colorama_init
+from colorama import Fore
+from colorama import Style
 
 class Logger_level(Enum):
     DEBUG = 1
@@ -56,16 +59,16 @@ class Logger:
 
     def error(self, text):
         if self.lvl <= Logger_level.ERROR:
-            print(f"ERROR: {text}")
+            print(f"{Fore.RED}ERROR: {text}{Style.RESET_ALL}")
 
     def warn(self, text):
         if self.lvl <= Logger_level.WARN:
-            print(f"Warn: {text}")
+            print(f"{Fore.YELLOW}Warn: {text}{Style.RESET_ALL}")
 
     def info(self, text):
         if self.lvl <= Logger_level.INFO:
-            print(f"Info: {text}")
+            print(f"{Fore.GREEN}Info: {text}{Style.RESET_ALL}")
 
     def debug(self, text):
         if self.lvl <= Logger_level.DEBUG:
-            print(f"DBG: {text}")
+            print(f"{Fore.BLUE}DBG: {text}{Style.RESET_ALL}")

@@ -11,6 +11,7 @@ This script allows to load data from ESA's API and extract selected variables. A
 - numpy==1.21.5
 - pygrib==2.1.4
 - cdsapi==0.6.1
+- tqdm==4.64.1
 
 ### Samples
 

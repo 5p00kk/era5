@@ -4,20 +4,19 @@ from visualizer import Visualizer
 from logger import Logger, Logger_level
 
 
-data_loader = Era_data("2m_temperature")
-
-logger = Logger(Logger_level.INFO)
-
-visualizer = Visualizer()
-visualizer.set_window(5)
-
-
-grb_data = data_loader.load()
-
-
 POZNAN_COORD={'lat': 40.37767, 'lon': 49.89201} # baku
 POZNAN_COORD={'lat': 6.200000, 'lon': 106.816666} # jakarta
 POZNAN_COORD={'lat': 52.40692, 'lon': 16.92993} # poznan
+
+# Init objects
+data_loader = Era_data("2m_temperature")
+logger = Logger(Logger_level.INFO)
+visualizer = Visualizer(5)
+
+
+
+
+grb_data = data_loader.load()
 
 # Available GRBS
 logger.debug("Available GRIB msgs:")

@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Visualizer:
-    def __init__(self) -> None:
-        self.ws = 5
+    def __init__(self, ws=5) -> None:
+        self.ws = ws
 
     def set_window(self, ws):
         self.ws = ws

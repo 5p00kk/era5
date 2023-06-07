@@ -26,7 +26,9 @@ for location in locations.values():
     total_data[location["name"]] = []
     year_data[location["name"]] = []
 
-logger.info(f"\nLoading all data (1940-2022)")
+print("")
+logger.info(f"Loading all data (1940-2022)")
+
 grb_data.rewind() # rewind the iterator
 with tqdm(total=total_it) as progress_bar:
     for i, grb in enumerate(grb_data):
@@ -62,7 +64,8 @@ with tqdm(total=total_it) as progress_bar:
 
 
 for location in locations.values():
-    logger.info(f"\nExtracting data for: {location['name'].upper()}")
+    print("")
+    logger.info(f"Extracting data for: {location['name'].upper()}")
     logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
 
     # Calculate averaged total and deviation data

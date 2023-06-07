@@ -13,6 +13,11 @@ This script allows to load data from ECMWF API and extract selected variables. A
 - cdsapi==0.6.1
 - tqdm==4.64.1
 
+
+### Usage
+- Add location to locations.csv
+- Run main.py
+
 ### Samples
 
 ![sample_0](./samples/poznan.png)

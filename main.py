@@ -20,33 +20,31 @@ for grb in grb_data:
     logger.debug(grb)
 
 total_it = len(data_loader.year_list)*12
-
+total_data = {}
+year_data = {}
 for location in locations.values():
-    total_data = []
-    year_data = []
+    total_data[location["name"]] = []
+    year_data[location["name"]] = []
 
-    logger.info(f"\nExtracting data for: {location['name'].upper()}")
-    logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
-
-    # TODO this loop can be done only once
-    # TODO Save all data with single loop run
-    grb_data.rewind() # rewind the iterator
-    with tqdm(total=total_it) as progress_bar:
-        for i, grb in enumerate(grb_data):
+logger.info(f"\nLoading all data (1940-2022)")
+grb_data.rewind() # rewind the iterator
+with tqdm(total=total_it) as progress_bar:
+    for i, grb in enumerate(grb_data):
             
-            # Update progress bar
-            progress_bar.set_description(f"{grb.year}")
-            progress_bar.update(1)
+        # Update progress bar
+        progress_bar.set_description(f"{grb.year}")
+        progress_bar.update(1)
 
-            # Get lat/lon values
-            lats, lons = grb.latlons()
-            # Make sure they match
-            assert(grb.values.shape == lats.shape)
-            assert(lons.shape == lats.shape)
-            # Get single row/col as they repeat
-            lats = lats[:,0]
-            lons = lons[0]
+        # Get lat/lon values
+        lats, lons = grb.latlons()
+        # Make sure they match
+        assert(grb.values.shape == lats.shape)
+        assert(lons.shape == lats.shape)
+        # Get single row/col as they repeat
+        lats = lats[:,0]
+        lons = lons[0]
 
+        for location in locations.values():
             # Find closest lat/lon
             lat_idx = np.argmin(abs(lats-location["lat"]))
             lon_idx = np.argmin(abs(lons-location["lon"]))
@@ -56,23 +54,27 @@ for location in locations.values():
             temp_k = grb.values[lat_idx][lon_idx]
             temp_c = temp_k-272.15
 
-            year_data.append(temp_c)
+            year_data[location["name"]].append(temp_c)
             
             if grb.month == 12:
-                #logger.info(f"{grb.year}")
-                total_data.append(year_data)
-                year_data = []
+                total_data[location["name"]].append(year_data[location["name"]])
+                year_data[location["name"]] = []
+
+
+for location in locations.values():
+    logger.info(f"\nExtracting data for: {location['name'].upper()}")
+    logger.info(f"Lat: {location['lat']} Lon: {location['lon']}")
 
     # Calculate averaged total and deviation data
     WS = 3
-    total_data = np.array(total_data, dtype=np.float64)
-    dev_data = deviation(total_data)
-    total_data_avg = window_avg(total_data, WS)
-    dev_data_avg = window_avg(dev_data, WS)
-    minmax = max(abs(dev_data_avg.min()), abs(dev_data_avg.min()))
+    data = np.array(total_data[location["name"]], dtype=np.float64)
+    data_dev = deviation(data)
+    data_avg = window_avg(data, WS)
+    data_dev_avg = window_avg(data_dev, WS)
+    minmax = max(abs(data_dev_avg.min()), abs(data_dev_avg.min()))
 
-    logger.info(f"Temp range: {total_data.min()} to {total_data.max()}")
-    logger.info(f"Temp deviation range: {dev_data_avg.min()} to {dev_data_avg.max()}")
+    logger.info(f"Temp range: {data.min()} to {data.max()}")
+    logger.info(f"Temp deviation range: {data_dev_avg.min()} to {data_dev_avg.max()}")
 
-    plot_heatmap(total_data_avg, data_loader.year_list[WS:], location["name"], "t", -40, 40)
-    plot_heatmap(dev_data_avg, data_loader.year_list[WS:], location["name"], "d", -1*minmax, minmax)
+    plot_heatmap(data_avg, data_loader.year_list[WS:], location["name"], "t", -40, 40)
+    plot_heatmap(data_dev_avg, data_loader.year_list[WS:], location["name"], "d", -1*minmax, minmax)
